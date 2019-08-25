@@ -50,15 +50,22 @@ class AppointmentController {
     /**
      * Check if provider_id is a provider
      */
-    const isProvider = await User.findOne({
+    const checkIsProvider = await User.findOne({
       where: { id: provider_id, provider: true },
     });
 
-    if (!isProvider) {
+    if (!checkIsProvider) {
       return res
         .status(400)
         .json({ error: 'You can appointments with providers' });
     }
+    /**
+     *  Check user Provider is himself
+     */
+    if (checkIsProvider.id === req.userId) {
+      return res.status(400).json({ error: 'User not released' });
+    }
+
     /**
      * Check for past dates
      */
